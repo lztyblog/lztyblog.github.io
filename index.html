@@ -1,7 +1,261 @@
-<h1> welcome to my blog </h1>
-<p>
-  <a href = "https://github.com/lztyblog/lztyblog.github.io/blob/main/week05practical04.py"> download </a>
 
-  <a href = "C:\Users\Gaoman\Desktop\School test\Python\week\week05practical04.py"> download </a>
-</p>
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <title>站点创建成功-phpstudy for windows</title>
+  <meta name="keywords" content="">
+  <meta name="description" content="">
+  <meta name="renderer" content="webkit">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black"> 
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="format-detection" content="telephone=no">
+  <meta HTTP-EQUIV="pragma" CONTENT="no-cache"> 
+  <meta HTTP-EQUIV="Cache-Control" CONTENT="no-store, must-revalidate"> 
+  <meta HTTP-EQUIV="expires" CONTENT="Wed, 26 Feb 1997 08:21:57 GMT"> 
+  <meta HTTP-EQUIV="expires" CONTENT="0">
+  <style>
+    body{
+      font: 16px arial,'Microsoft Yahei','Hiragino Sans GB',sans-serif;
+    }
+    h1{
+      margin: 0;
+      color:#3a87ad;
+      font-size: 26px;
+    }
+    .content{
+      width: 60%;
+	  height: 70%;
+      margin: 0 auto;
+     
+    }
+    .content >div{
+      margin-top: 173px;
+      padding: 20px;
+      background: #e6e6fa;  
+      border-radius: 15px;
+    }
+    .content dl{
+      color: #2d6a88;
+      line-height: 40px;
+    } 
+    .content div div {
+      padding-bottom: 20px;
+      text-align:center;
+    }
+  </style>
+</head>
+<body>
+  <div class="content">
+      <div>
+           <h1>欢迎来到Lzty/gaoman资源库</h1>
+        <dl>
+          <dt>目录</dt>
+		  <dd><a href="http://lztydoting.cn/wordpress/">博客链接:lztydoting.cn/wordpress/</a><dd>
+          <a href="http://lztydoting.cn/pikachu/">皮卡丘靶场链接:lztydoting.cn/pikachu /</a><dd>
+		  <a href="http://lztydoting.cn/DVWA/"> DVWA链接:lztydoting.cn/DVWA </a><dd>
+		  <a href="http://lztydoting.cn/BlueLotus_XSSReceiver-master/admin.php"> 蓝莲花xss靶场链接<a><dd>
+          <dd></dd>
+		  
+          <dt>注：</dt>
+          <dd>1：密码全在数据库里面 可以自己打一下 (给你们授权）(/dog)</dd>
+          <dd>2：注意哦 天上不会白白掉馅饼 其中有两三个木马病毒 小心哦 </dd>
+		  <dd>   中病毒了也没有关系 个人实测过 对电脑不会有任何损害 并且很简单就可以修复 加油哦！！~<dd>
+		 
+         
+        </dl>
+        <div></a> </div>
+    
+      </div>
+    </div> 
+	<dd><a href="https://beian.miit.gov.cn/" target="_blank">您的备案号：冀ICP备2024046836号-1</a><dd>
+	<a href="https://beian.miit.gov.cn/" target="_blank">冀ICP备2024046836号-1</a>
+	<dd><dd>
+	<SCRIPT language=JavaScript>
 
+<!DOCTYPE html>
+<html><head>
+<title>登录</title>
+<meta name="content-type"; charset="UTF-8">
+</head><body> 
+<div class="content" align="center"> <!--头部-->
+ <div class="header"> <h1>登录页面</h1> </div> 
+<!--中部--> 
+<div class="middle">
+ <form id="loginform" action="loginaction.php" method="post"> 
+<table border="0"> <tr> 
+    <td>用户名：</td> 
+<td> <input type="text" id="name" name="username" 
+required="required" value="<?php
+echo isset($_COOKIE[""]) ? $_COOKIE[""] : ""; ?>"> </td> </tr> 
+<tr> <td>密   码：</td> <td><input type="password" id="password" name="password"></td> 
+</tr> <tr> <td colspan="2"> <input type="checkbox" name="remember"><small>记住我 </td> </tr> <tr> <td 
+colspan="2" align="center" style="color:red;font-size:10px;"> <!--提示信息--> <?php
+$err = isset($_GET["err"]) ? $_GET["err"] : "";
+switch ($err) {
+    case 1:
+        echo "用户名或密码错误！";
+        break;
+
+    case 2:
+        echo "用户名或密码不能为空！";
+        break;
+} ?> </td> </tr> <tr> <td colspan="2" align="center"> 
+<input type="submit" id="login" name="login" value="登录"> <input type="reset" id="reset" 
+name="reset" value="重置"> </td> </tr> 
+<tr> 
+    <td colspan="2" align="center"> 还没有账号，快去<a href="register.php">注册</a>吧</td>
+</tr> 
+</table> 
+</form> 
+</div> 
+<!--脚部--> 
+<div class="footer"> <small>Copyright &copy; 版权所有·欢迎翻版 </div> </div>
+</body>
+</html>     
+
+
+<?php
+// $Id:$ //声明变量
+$username = isset($_POST['username']) ? $_POST['username'] : "";
+$password = isset($_POST['password']) ? $_POST['password'] : "";
+$remember = isset($_POST['remember']) ? $_POST['remember'] : ""; //判断用户名和密码是否为空
+if (!empty($username) && !empty($password)) { //建立连接
+    $conn = mysqli_connect('localhost', '123.207.60.44', '123456', 'user'); //准备SQL语句
+    $sql_select = "SELECT username,password FROM usertext WHERE username = '$username' AND password = '$password'"; //执行SQL语句
+    $ret = mysqli_query($conn, $sql_select);
+    $row = mysqli_fetch_array($ret); //判断用户名或密码是否正确
+    if ($username == $row['username'] && $password == $row['password']) 
+    { //选中“记住我”
+        if ($remember == "on") 
+        { //创建cookie
+            setcookie("", $username, time() + 7 * 24 * 3600);
+        } //开启session
+        session_start(); //创建session
+        $_SESSION['user'] = $username; //写入日志
+        $ip = $_SERVER['REMOTE_ADDR'];
+        $date = date('Y-m-d H:m:s');
+        $info = sprintf("当前访问用户：%s,IP地址：%s,时间：%s /n", $username, $ip, $date);
+        $sql_logs = "INSERT INTO logs(username,ip,date) VALUES('$username','$ip','$date')";
+        //日志写入文件，如实现此功能，需要创建文件目录logs
+        $f = fopen('./logs/' . date('Ymd') . '.log', 'a+');
+        fwrite($f, $info);
+        fclose($f); //跳转到loginsucc.php页面
+        header("Location:loginsucc.php"); //关闭数据库,跳转至loginsucc.php
+        mysqli_close($conn);
+    }
+    else 
+    { 
+        //用户名或密码错误，赋值err为1
+        header("Location:login.php?err=1");
+    }
+} else { //用户名或密码为空，赋值err为2
+    header("Location:login.php?err=2");
+} ?>
+
+<!DOCTYPE html>
+<html>
+<head>
+<title>登录成功</title>
+<meta name="content-type";
+ charset="UTF-8">
+</head>
+<body> 
+<div> 
+<?php
+// $Id:$ //开启session
+session_start(); //声明变量
+$username = isset($_SESSION['user']) ? $_SESSION['user'] : ""; //判断session是否为空
+if (!empty($username)) { ?> 
+<h1>登录成功！</h1> 欢迎您！
+<?php
+    echo $username; ?> 
+<br/> <a href="lztydoting.cn">退出</a> //跳转至主网页
+<?php
+} else { //未登录，无权访问
+     ?>
+ <h1>你无权访问！！！</h1> 
+<?php
+} ?> </div>
+</body>
+</html>
+
+<!DOCTYPE html>
+<html>
+<head><title>注册</title>
+<meta name="content-type"; charset="UTF-8">
+</head><body> 
+<div class="content" align="center"> <!--头部--> 
+<div class="header"> <h1>注册页面</h1> </div> <!--中部--> 
+<div class="middle"> 
+<form action="registeraction.php" method="post"> <table border="0"> 
+<tr> <td>用户名：</td> 
+<td><input type="text" id="id_name" name="username" required="required"></td> 
+</tr> <tr>
+ <td>密   码：</td> <td><input type="password" id="password" name="password" 
+required="required"></td> 
+</tr> <tr>
+ <td>重复密码：</td> <td><input type="password" id="re_password" 
+name="re_password" required="required"></td> </tr> <tr>
+ <td>性别：</td> <td> <input type="radio" id="sex" name="sex" value="mam">男 <input type="radio" id="sex" name="sex" value="woman">女 </td> </tr> <tr>
+ <td>QQ：</td> <td><input type="text" id="qq" name="qq" required="required"></td> </tr> <tr> 
+<td>Email：</td> <td><input type="email" id="email" name="email" required="required"></td> </tr> <tr> 
+<td>电话：</td> <td><input type="text" id="phone" name="phone" required="required"></td> </tr> <tr> 
+<td>地址：</td> <td><input type="text" id="address" name="address" required="required"></td> </tr> 
+<tr> <td colspan="2" align="center" style="color:red;font-size:10px;"> <!--提示信息--> 
+<?php
+$err = isset($_GET["err"]) ? $_GET["err"] : "";
+switch ($err) {
+    case 1:
+        echo "用户名已存在！";
+        break;
+
+    case 2:
+        echo "密码与重复密码不一致！";
+        break;
+
+    case 3:
+        echo "注册成功！";
+        break;
+}
+?> 
+</td> </tr> <tr> <td colspan="2" align="center"> 
+<input type="submit" id="register" name="register" value="注册">
+ <input type="reset" id="reset" name="reset" value="重置"> </td></tr> 
+ <tr> <td colspan="2" align="center"> 
+如果已有账号，快去<a href="login.php">登录</a>吧！ </td> </tr> </table> </form> </div> 
+<!--脚部--> 
+<div class="footer"> <small>Copyright &copy; 版权所有·欢迎翻版 </div> </div></body></html>
+
+<?php
+// $Id:$ //声明变量
+$username = isset($_POST['username']) ? $_POST['username'] : "";
+$password = isset($_POST['password']) ? $_POST['password'] : "";
+$re_password = isset($_POST['re_password']) ? $_POST['re_password'] : "";
+$sex = isset($_POST['sex']) ? $_POST['sex'] : "";
+$qq = isset($_POST['qq']) ? $_POST['qq'] : "";
+$email = isset($_POST['email']) ? $_POST['email'] : "";
+#$phone = isset($_POST['phone']) ? $_POST['phone'] : "";
+#$address = isset($_POST['address']) ? $_POST['address'] : "";
+if ($password == $re_password) { //建立连接
+    $conn = mysqli_connect("localhost", "123.207.60.44", "123456", "user"); //准备SQL语句,查询用户名
+    $sql_select = "SELECT username FROM usertext WHERE username = '$username'"; //执行SQL语句
+    $ret = mysqli_query($conn, $sql_select);
+    $row = mysqli_fetch_array($ret); //判断用户名是否已存在
+    if ($username == $row['username']) { //用户名已存在，显示提示信息
+        header("Location:register.php?err=1");
+    } else { //用户名不存在，插入数据 //准备SQL语句
+        $sql_insert = "INSERT INTO usertext(username,password,sex,qq,email,phone,address) 
+VALUES('$username','$password','$sex','$qq','$email')"; //执行SQL语句
+        mysqli_query($conn, $sql_insert);
+        header("Location:register.php?err=3");
+    } //关闭数据库
+    mysqli_close($conn);
+} else {
+    header("Location:register.php?err=2");
+} ?>
+
+</body>
+</html>
