@@ -1,0 +1,32 @@
+; add.asm
+; Implements: X = X + Y + 100 - Z
+; Includes comments showing addressing modes
+; Halts with an infinite loop to prevent data execution
+
+        LDI R0, 60        ; Immediate addressing: R0 <- 60
+        ST R0, X          ; Direct addressing: store to X
+
+        LDI R1, 90        ; Immediate: R1 <- 90
+        ST R1, Y          ; Store to Y
+
+        LDI R2, 44        ; Immediate: R2 <- 44
+        ST R2, Z          ; Store to Z
+
+        LD R3, X          ; Load X into R3
+        LD R4, Y          ; Load Y into R4
+        ADD R3, R4        ; R3 = X + Y
+
+        LDI R5, 100       ; Immediate: R5 <- 100
+        ADD R3, R5        ; R3 = X + Y + 100
+
+        LD R6, Z          ; Load Z into R6
+        SUB R3, R6        ; R3 = X + Y + 100 - Z
+
+        ST R3, X          ; Store result back to X
+
+loop:   JMP loop          ; Infinite loop
+
+; ====== Data Segment ======
+X:      .data 1 0
+Y:      .data 1 0
+Z:      .data 1 0

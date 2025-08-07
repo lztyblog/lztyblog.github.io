@@ -1,0 +1,18 @@
+; func.asm
+; Implements: X ← X(5:0) || 00 (shift left by 2 bits and clear top bits)
+; Stores result back to X and halts
+
+        LD R0, X          ; Load X from memory
+        SHL R0            ; Logical shift left by 1 bit
+        SHL R0            ; Shift left again (total of 2 bits)
+
+        ; Clear top 2 bits using mask 0xFC (11111100)
+        LDI R1, 0xFC      ; Load bitmask
+        AND R0, R1        ; Keep only lower 6 bits
+
+        ST R0, X          ; Store result back to X
+
+loop:   JMP loop          ; Infinite loop to end program
+
+; ====== Data Segment ======
+X:      .data 1 0x15      ; Example value for testing

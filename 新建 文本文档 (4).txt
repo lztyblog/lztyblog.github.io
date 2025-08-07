@@ -1,0 +1,51 @@
+; convert.asm
+; Converts a BCD value into 7-segment display bit patterns
+; Outputs to lowDigit and highDigit using lookup table
+
+        ; Load BCD value
+        LD R0, BCD              ; Load BCD from memory
+
+        ; Extract low nibble (0–9)
+        LDI R1, 0x0F            ; Mask for low nibble
+        AND R2, R0, R1          ; R2 = low digit
+
+        ; Extract high nibble (by shifting right 4 bits)
+        LDI R1, 4
+        MOV R3, R0
+shift_high:
+        SHR R3                  ; Logical shift right by 1 bit
+        SUBI R1, 1              ; Decrement shift counter
+        BRNZ shift_high         ; Repeat until shifted 4 times
+
+        ; Lookup segment code for low digit
+        LDI R4, DIGIT_TABLE     ; Base address of lookup table
+        ADD R4, R2              ; Index into table
+        LD R5, [R4]             ; Load segment pattern
+        ST R5, lowDigit         ; Store to lowDigit
+
+        ; Lookup segment code for high digit
+        LDI R4, DIGIT_TABLE
+        ADD R4, R3
+        LD R5, [R4]
+        ST R5, highDigit
+
+loop:   JMP loop                ; Halt program
+
+; ====== 7-segment Lookup Table ======
+; Maps digits 0–9 to segment bit patterns
+DIGIT_TABLE:
+        .data 1 0x40   ; 0
+        .data 1 0x79   ; 1
+        .data 1 0x24   ; 2
+        .data 1 0x30   ; 3
+        .data 1 0x19   ; 4
+        .data 1 0x12   ; 5
+        .data 1 0x02   ; 6
+        .data 1 0x78   ; 7
+        .data 1 0x00   ; 8
+        .data 1 0x10   ; 9
+
+; ====== Required Data Template ======
+BCD:        .data 1 0x18
+lowDigit:   .data 1 0
+highDigit:  .data 1 0
