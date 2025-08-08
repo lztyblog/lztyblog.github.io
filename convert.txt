@@ -1,0 +1,116 @@
+start:    load BCD         ; Absolute (ACC = 8-bit BCD value)
+         and 0x0F         ; Immediate (ACC = low nibble of BCD)
+         store lowDigit   ; Absolute (save low digit value in memory)
+         load BCD         ; Absolute (reload BCD to isolate high nibble)
+         subm lowDigit    ; Absolute (ACC = BCD - low, i.e. high nibble * 0x10)
+
+         ; Convert high nibble to 7-seg code by subtracting 0x10 until zero:
+         jumpz High0      ; if high nibble is 0 (ACC became 0)
+         sub 0x10         ; Immediate subtract 0x10 (decrement high nibble)
+         jumpz High1      ; if high nibble was 1 (ACC now 0)
+         sub 0x10
+         jumpz High2      ; if high nibble was 2
+         sub 0x10
+         jumpz High3      ; if high nibble was 3
+         sub 0x10
+         jumpz High4      ; if high nibble was 4
+         sub 0x10
+         jumpz High5      ; if high nibble was 5
+         sub 0x10
+         jumpz High6      ; if high nibble was 6
+         sub 0x10
+         jumpz High7      ; if high nibble was 7
+         sub 0x10
+         jumpz High8      ; if high nibble was 8
+         sub 0x10
+         jumpz High9      ; if high nibble was 9
+
+High0:   move 0x40        ; 7-seg code for 0 
+         store highDigit  ; Absolute (output high digit code)
+         jumpz Next
+High1:   move 0x79        ; 7-seg code for 1 
+         store highDigit
+         jumpz Next
+High2:   move 0x24        ; 7-seg code for 2 
+         store highDigit
+         jumpz Next
+High3:   move 0x30        ; 7-seg code for 3 
+         store highDigit
+         jumpz Next
+High4:   move 0x19        ; 7-seg code for 4 
+         store highDigit
+         jumpz Next
+High5:   move 0x12        ; 7-seg code for 5 
+         store highDigit
+         jumpz Next
+High6:   move 0x02        ; 7-seg code for 6 
+         store highDigit
+         jumpz Next
+High7:   move 0x78        ; 7-seg code for 7 
+         store highDigit
+         jumpz Next
+High8:   move 0x00        ; 7-seg code for 8 
+         store highDigit
+         jumpz Next
+High9:   move 0x10        ; 7-seg code for 9 
+         store highDigit
+         jumpz Next
+
+Next:     load lowDigit    ; Absolute (ACC = saved low digit value)
+          ; Convert low nibble to 7-seg code by subtracting 1 until zero:
+          jumpz Low0      ; if low digit is 0 
+          sub 1           ; Immediate subtract 1 (decrement low digit)
+          jumpz Low1      ; if low digit was 1
+          sub 1
+          jumpz Low2      ; if low digit was 2
+          sub 1
+          jumpz Low3      ; if low digit was 3
+          sub 1
+          jumpz Low4      ; if low digit was 4
+          sub 1
+          jumpz Low5      ; if low digit was 5
+          sub 1
+          jumpz Low6      ; if low digit was 6
+          sub 1
+          jumpz Low7      ; if low digit was 7
+          sub 1
+          jumpz Low8      ; if low digit was 8
+          sub 1
+          jumpz Low9      ; if low digit was 9
+
+Low0:    move 0x40        ; 7-seg code for 0 
+         store lowDigit   ; Absolute (output low digit code)
+         jumpz Done
+Low1:    move 0x79        ; 7-seg code for 1 
+         store lowDigit
+         jumpz Done
+Low2:    move 0x24        ; 7-seg code for 2 
+         store lowDigit
+         jumpz Done
+Low3:    move 0x30        ; 7-seg code for 3 
+         store lowDigit
+         jumpz Done
+Low4:    move 0x19        ; 7-seg code for 4 
+         store lowDigit
+         jumpz Done
+Low5:    move 0x12        ; 7-seg code for 5 
+         store lowDigit
+         jumpz Done
+Low6:    move 0x02        ; 7-seg code for 6 
+         store lowDigit
+         jumpz Done
+Low7:    move 0x78        ; 7-seg code for 7 
+         store lowDigit
+         jumpz Done
+Low8:    move 0x00        ; 7-seg code for 8 
+         store lowDigit
+         jumpz Done
+Low9:    move 0x10        ; 7-seg code for 9 
+         store lowDigit
+         jumpz Done
+
+Done:    jumpz Done        ; Direct addressing (trap in infinite loop)
+
+BCD:      .data 1 0x18    ; 8-bit BCD input value (e.g. 0x18 for decimal 18)
+lowDigit: .data 1 0       ; Low 7-seg code output (for BCDs ones place)
+highDigit:.data 1 0       ; High 7-seg code output (for BCDs tens place)

@@ -1,0 +1,11 @@
+start:    load X          ; Absolute addressing mode (ACC = M[X])
+         addm Y          ; Absolute addressing mode (ACC = ACC + M[Y])
+         add 100         ; Immediate addressing mode (ACC = ACC + 100)
+         subm Z          ; Absolute addressing mode (ACC = ACC - M[Z])
+         store X         ; Absolute addressing mode (store ACC into M[X])
+loop:    jumpz loop        ; Direct addressing mode (infinite loop trap)
+
+; Data declarations
+X:       .data 1 60
+Y:       .data 1 90
+Z:       .data 1 44

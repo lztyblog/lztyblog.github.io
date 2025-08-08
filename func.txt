@@ -1,0 +1,10 @@
+start:    load X           ; Absolute addressing (ACC = M[X])
+         and 0x3F         ; Immediate addressing (mask bits 7-6 to 0)
+         store X          ; Absolute addressing (store masked value back to X)
+         addm X           ; Absolute addressing (ACC = ACC + M[X])  doubles X
+         store X          ; Absolute addressing (store 2*X back to memory)
+         addm X           ; Absolute addressing (ACC = ACC + M[X]) doubles again
+         store X          ; Absolute addressing (store final 4*X result)
+loop:     jumpz loop         ; Direct addressing (loop forever to trap CPU)
+
+X:       .data 1 0xC3      ; Example initial value (1100_0011b)
