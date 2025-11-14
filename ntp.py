@@ -1,126 +1,93 @@
-
+#!/usr/bin/env python3
+# ntp.py - small NTP broadcast listener for Pi-3
+# Only uses the socket module.
 
 import socket
 
-DELTA_1900_TO_1970 = 2208988800  # seconds between 1900-01-01 and 1970-01-01
-UDP_PORT_NTP = 123
-MIN_IP_HDR = 20
-UDP_HDR = 8
+NTP_PORT = 123
+NTP_DELTA = 2208988800  # seconds between 1900-01-01 and 1970-01-01
+BUF_SIZE = 1024
 
-def u16_be(b: bytes) -> int:
-    return (b[0] << 8) | b[1]
 
-def u32_be(b: bytes) -> int:
-    return (b[0] << 24) | (b[1] << 16) | (b[2] << 8) | b[3]
+def bytes_to_u32(chunk):
+    """Convert 4 bytes (big-endian) to an unsigned 32-bit integer."""
+    return ((chunk[0] << 24) |
+            (chunk[1] << 16) |
+            (chunk[2] << 8)  |
+            chunk[3])
 
-def ip_to_str(b: bytes) -> str:
-    return ".".join(str(x) for x in b)
 
-def parse_ipv4_udp(pkt: bytes):
-    """Return (src_ip, dst_ip, udp_off, udp_len) or None if not IPv4/UDP."""
-    if len(pkt) < MIN_IP_HDR:
-        return None
-    v_ihl = pkt[0]
-    version = (v_ihl >> 4) & 0xF
-    ihl = (v_ihl & 0xF) * 4
-    if version != 4 or ihl < MIN_IP_HDR or len(pkt) < ihl + UDP_HDR:
-        return None
-
-    # Protocol 17 = UDP
-    proto = pkt[9]
-    if proto != 17:
-        return None
-
-    total_len = u16_be(pkt[2:4])  # may be shorter than recv buffer
-    # clamp to actual
-    total_len = min(total_len, len(pkt))
-
-    src_ip = ip_to_str(pkt[12:16])
-    dst_ip = ip_to_str(pkt[16:20])
-
-    # UDP header begins right after IP header
-    udp_off = ihl
-    if total_len < udp_off + UDP_HDR:
-        return None
-
-    udp_len = u16_be(pkt[udp_off + 4: udp_off + 6])
-    # minimal sanity
-    if udp_len < UDP_HDR or total_len < udp_off + udp_len:
-        return None
-
-    return (src_ip, dst_ip, udp_off, udp_len)
-
-def parse_ntp_payload(udp_payload: bytes):
+def parse_ntp_packet(packet):
     """
-    Expect at least 48 bytes. Return dict with raw/derived time if looks like NTP.
-    NTP first byte: LI(2) VN(3) Mode(3). Broadcast should have Mode=5.
+    Very small NTP parser:
+    - require at least 48 bytes
+    - read version + mode from first byte
+    - read Transmit Timestamp seconds/fraction from bytes 40..47
     """
-    if len(udp_payload) < 48:
+    if len(packet) < 48:
         return None
-    b0 = udp_payload[0]
-    li   = (b0 >> 6) & 0b11
-    vn   = (b0 >> 3) & 0b111
-    mode =  b0       & 0b111
 
-    # Transmit Timestamp at bytes 40..47 (sec, frac)
-    sec = u32_be(udp_payload[40:44])
-    frac = u32_be(udp_payload[44:48])
+    first = packet[0]
+    version = (first >> 3) & 0x07
+    mode = first & 0x07
 
-    unix_sec = sec - DELTA_1900_TO_1970
-    unix_frac = frac / float(1 << 32)
+    # Transmit Timestamp (offset 40 bytes from start of NTP header)
+    ntp_sec = bytes_to_u32(packet[40:44])
+    ntp_frac = bytes_to_u32(packet[44:48])
+
+    unix_sec = ntp_sec - NTP_DELTA
+    unix_frac = ntp_frac / float(1 << 32)
 
     return {
-        "li": li, "vn": vn, "mode": mode,
-        "ntp_sec": sec, "ntp_frac": frac,
-        "unix_sec": unix_sec, "unix_frac": unix_frac,
+        "version": version,
+        "mode": mode,
+        "ntp_sec": ntp_sec,
+        "ntp_frac": ntp_frac,
+        "unix_sec": unix_sec,
+        "unix_frac": unix_frac,
     }
 
-def main():
-    # Raw IPv4 socket receiving UDP packets (requires sudo)
-    s = socket.socket(socket.AF_INET, socket.SOCK_RAW, socket.IPPROTO_UDP)
-    # No bind needed; kernel will deliver UDP datagrams (incl. broadcast) to this raw socket.
 
-    print("Sniffing UDP (raw) for NTP on Linux…  (Ctrl+C to stop)")
+def main():
+    # UDP socket on port 123; Pi-3 listens for NTP (including broadcast) here.
+    sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+    sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+
+    try:
+        sock.bind(("", NTP_PORT))
+    except OSError as e:
+        print("Cannot bind to UDP port 123:", e)
+        print("Hint: make sure you run this on Pi-3 with python3, and")
+        print("      that you have permission (use: sudo python3 ntp.py).")
+        return
+
+    print("Listening on UDP/123 for NTP packets (Ctrl+C to stop)...")
+
     try:
         while True:
-            pkt, addr = s.recvfrom(4096)  # addr is (ip, 0), but we parse IP header anyway
-            parsed = parse_ipv4_udp(pkt)
-            if not parsed:
-                continue
-            src_ip, dst_ip, udp_off, udp_len = parsed
-
-            # UDP header fields
-            sport = u16_be(pkt[udp_off:udp_off+2])
-            dport = u16_be(pkt[udp_off+2:udp_off+4])
-            if dport != UDP_PORT_NTP:
+            data, addr = sock.recvfrom(BUF_SIZE)
+            info = parse_ntp_packet(data)
+            if info is None:
                 continue
 
-            payload_off = udp_off + UDP_HDR
-            payload_end = payload_off + (udp_len - UDP_HDR)
-            if payload_end > len(pkt):
-                continue
-            payload = pkt[payload_off:payload_end]
+            # If你只想看广播包，可以过滤 mode != 5
+            # 题目是 broadcast from Pi-1，所以这里一般 mode 应该是 5
+            # 可以保留这个判断，也可以注释掉看所有 NTP 包
+            # if info["mode"] != 5:
+            #     continue
 
-            ntp = parse_ntp_payload(payload)
-            if not ntp:
-                continue
-            if ntp["mode"] != 5:
-                continue
-
-            ns = ntp["ntp_sec"]; nf = ntp["ntp_frac"]
-            us = ntp["unix_sec"]; uf = ntp["unix_frac"]
-            print(
-                f"{src_ip} → {dst_ip}  UDP/{dport}  VN={ntp['vn']} Mode={ntp['mode']}\n"
-                f"  Tx(NTP): seconds={ns} (0x{ns:08x}), fraction={nf} (0x{nf:08x})\n"
-                f"  → Unix:  {us} + {uf:.9f} s"
-            )
+            print("From {0}".format(addr[0]))
+            print("  Version: {0}, Mode: {1}".format(info["version"], info["mode"]))
+            print("  NTP seconds : {0} (0x{0:08x})".format(info["ntp_sec"]))
+            print("  NTP fraction: {0} (0x{0:08x})".format(info["ntp_frac"]))
+            print("  Unix time   : {0} + {1:.9f} s".format(
+                info["unix_sec"], info["unix_frac"]))
+            print("")
     except KeyboardInterrupt:
         pass
     finally:
-        try:
-            s.close()
-        except Exception:
-            pass
+        sock.close()
+
 
 if __name__ == "__main__":
     main()
