@@ -1,0 +1,8 @@
+Traceback (most recent call last):
+  File "ntp.py", line 83, in <module>
+    main()
+  File "ntp.py", line 53, in main
+    sock.bind(("", NTP_PORT))
+  File "/usr/lib/python2.7/socket.py", line 228, in meth
+    return getattr(self._sock,name)(*args)
+socket.error: [Errno 98] Address already in use
