@@ -1,0 +1,1 @@
+This is a small test message for the OS lab file task.
