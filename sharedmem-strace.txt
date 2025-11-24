@@ -1,0 +1,3 @@
+execve("./sharedmem.c", ["./sharedmem.c"], 0xbeb79524 /* 36 vars */) = -1 EACCES (Permission denied)
+strace: exec: Permission denied
++++ exited with 1 +++
