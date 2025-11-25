@@ -70,3 +70,4 @@ int main() {
   pthread_mutex_destroy(&shared_mutex);
   return 0;
 }
+
