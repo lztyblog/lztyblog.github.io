@@ -1,9 +1,9 @@
 import socket
 from PIL import Image
 
-UDP_IP = "127.0.0.1"
-UDP_PORT = 8082
-BUF_SIZE = 1024
+UDP_IP = "192.168.82.2"
+UDP_PORT = 8080
+BUF_SIZE = 60000
 
 sockRX = socket.socket(socket.AF_INET, socket.SOCK_DGRAM) 
 sockRX.bind((UDP_IP, UDP_PORT))
@@ -15,7 +15,6 @@ data,addr = sockRX.recvfrom(BUF_SIZE)
 number_of_segments = int(data)
 
 print("RX File: {0}".format(file_name))
-print(addr)
 
 f = open(file_name,'wb')
 

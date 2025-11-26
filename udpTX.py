@@ -2,9 +2,9 @@ import socket
 import os
 import time
 
-UDP_IP = "127.0.0.1"
-UDP_PORT = 8082
-BUF_SIZE = 1024
+UDP_IP = "192.168.82.2"
+UDP_PORT = 8080
+BUF_SIZE = 60000
 
 sockTX = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)  
 
