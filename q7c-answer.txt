@@ -1,0 +1,7 @@
+In Q7b I used one /25 subnet for the 100 worker nodes, one /26 subnet for the 31 servers and one /28 subnet for the 10 management nodes, all inside the 192.168.X.0/24 network. This fits because the total number of allocated addresses is 128 + 64 + 16 = 208, which is less than the 256 addresses available in a /24.
+
+If we increase the number of servers to 63, the server subnet needs at least 63 host addresses plus the network and broadcast addresses, so 63 + 2 = 65 addresses in total. The smallest subnet that can hold 65 addresses is a block of 128 addresses, i.e. a /25 (2^(32−25) = 128, with 126 usable hosts). That means the servers would also need a /25 subnet.
+
+However, inside a single /24 we only have 256 addresses. With one /25 for the workers (128 addresses), another /25 for the servers (128 addresses) and at least a /28 for the management nodes (16 addresses), the total becomes 128 + 128 + 16 = 272, which is larger than 256. So it is not possible to support 100 workers, 63 servers and 10 management nodes as three separate subnets inside one 192.168.X.0/24 network.
+
+One possible solution is to enlarge the overall network to a /23, for example 192.168.X.0/23 with netmask 255.255.254.0. A /23 gives 512 addresses, so we can allocate one /25 for the workers (126 usable hosts), one /25 for the servers (another 126 usable hosts, enough for 63 servers), and a smaller subnet such as a /27 or /28 for the management nodes. This keeps the three groups on separate subnets but removes the address space problem.
