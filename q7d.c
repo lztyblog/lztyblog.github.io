@@ -47,7 +47,6 @@ static void prvInputTask( void * pvParameters ) {
   }
 }
 
-extern struct console_state * console;
 
 void console_keyboard_ISR( void )
 {
