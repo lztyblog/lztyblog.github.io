@@ -1,0 +1,38 @@
+Note：
+	According to the formula from the lab script: Usable hosts = 2^(32 – prefix) – 2
+	A) User         ：10 management nodes with desktops
+ 	B) workers		：100 worker nodes used parallel processing
+ 	C) servers		： 31 data servers e.g. FTP, NAS etc.
+ 
+For this task I changed the 192 network on each desk from a /16 to a /24.
+So the new desk network becomes: 192.168.X.0/24 (mask 255.255.255.0).
+This isolates each desk from the others, which is the point of this redesign.
+Then I needed to split this /24 into three smaller subnets for management nodes, workers, and servers.
+I used VLSM and started from the largest group, which follows the idea from the lab scripts.
+
+The worker group needs about 100 hosts, so I calculated that a /25 gives 126 usable hosts.
+That is enough.
+So the worker subnet is:
+Network: 192.168.X.0
+Mask: /25
+Broadcast: 192.168.X.127
+Usable hosts: 192.168.X.1 to 192.168.X.126
+I assigned .1 as the gateway and .2 to .101 for the 100 worker Pis.
+Next, the server group needs 31 hosts.
+A /27 was too small (only 30 usable), so I used a /26 which gives 62 usable hosts.
+So the server subnet is:
+Network: 192.168.X.128
+Mask: /26
+Broadcast: 192.168.X.191
+Usable: 192.168.X.129 to 192.168.X.190
+Gateway at .129, and the servers from .130 upward.
+
+Finally, the management group needs about 10 hosts, so a /28 works since it gives 14 usable addresses.
+So the management subnet is:
+Network: 192.168.X.192
+Mask: /28
+Broadcast: 192.168.X.207
+Usable: 192.168.X.193 to 192.168.X.206
+Gateway at .193, desktops from .194 to .203.
+
+With this configuration, all three subnets can fit within the same /24 address space, resulting in reasonable address utilization, roughly following the approach described in the experiment. The addresses after .207 are currently unused but can be reused for future expansion.
