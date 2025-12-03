@@ -10,11 +10,11 @@ def send(sock, msg):
 def recv(sock):
     return sock.recv(1024).decode()
 
-# --- Accept email from PC ---
 srv = socket.socket()
 srv.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
 srv.bind(("", LISTEN_PORT))
 srv.listen(1)
+print("Listening on port",LISTEN_PORT)
 
 c, addr = srv.accept()
 send(c, "220 Pi-3 ready")
