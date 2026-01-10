@@ -1,0 +1,22 @@
+==523== Helgrind, a thread error detector
+==523== Copyright (C) 2007-2017, and GNU GPL'd, by OpenWorks LLP et al.
+==523== Using Valgrind-3.22.0 and LibVEX; rerun with -h for copyright info
+==523== Command: ./mutex_recursive
+==523== 
+shared = 13355
+shared = 12702
+shared = 12635
+shared = 12654
+==523== 
+==523== Process terminating with default action of signal 2 (SIGINT)
+==523==    at 0x4906D71: __futex_abstimed_wait_common64 (futex-internal.c:57)
+==523==    by 0x4906D71: __futex_abstimed_wait_common (futex-internal.c:87)
+==523==    by 0x4906D71: __futex_abstimed_wait_cancelable64 (futex-internal.c:139)
+==523==    by 0x490C7A2: __pthread_clockjoin_ex (pthread_join_common.c:102)
+==523==    by 0x4850E13: ??? (in /usr/libexec/valgrind/vgpreload_helgrind-amd64-linux.so)
+==523==    by 0x10946C: main (in /mnt/c/Users/z1803/Desktop/SYS2-lab7/mutex_recursive)
+==523== 
+==523== Use --history-level=approx or =none to gain increased speed, at
+==523== the cost of reduced accuracy of conflicting-access information
+==523== For lists of detected and suppressed errors, rerun with: -s
+==523== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 561224 from 30)
